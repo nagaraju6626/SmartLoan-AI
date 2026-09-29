@@ -1,0 +1,52 @@
+{
+    "version": "v20260928195250",
+    "algorithm": "random_forest",
+    "dataset_path": "data/processed\\b21264c1-ec7d-4bef-ba39-e0701badc989_cleaned.csv",
+    "training_date": "2026-09-28T19:52:51.028591",
+    "features": [
+        "Age",
+        "Employment_Years",
+        "Annual_Income",
+        "Coapplicant_Income",
+        "Loan_Amount",
+        "Loan_Term_Years",
+        "Cibil_Score",
+        "Existing_Loans",
+        "DTI_Ratio",
+        "Residential_Assets",
+        "Bank_Assets",
+        "Applicant_ID",
+        "Gender",
+        "Married",
+        "Dependents",
+        "Education",
+        "Self_Employed",
+        "Income_Verified",
+        "Property_Area",
+        "Loan_Purpose"
+    ],
+    "target": "Loan_Status",
+    "target_mapping": {
+        "1": "Approved",
+        "0": "Rejected"
+    },
+    "metrics": {
+        "accuracy": 0.724,
+        "precision": 0.7202072538860104,
+        "recall": 0.9025974025974026,
+        "f1_score": 0.8011527377521613,
+        "roc_auc": 0.8114515692640693,
+        "confusion_matrix": [
+            [
+                168,
+                216
+            ],
+            [
+                60,
+                556
+            ]
+        ],
+        "training_time_sec": 23.122136
+    },
+    "status": "Active"
+}
