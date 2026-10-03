@@ -19,8 +19,9 @@ render_sidebar()
 render_header()
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
-UPLOAD_DIR = "data/uploads"
-PROCESSED_DIR = "data/processed"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+UPLOAD_DIR = os.path.join(PROJECT_ROOT, "data", "uploads")
+PROCESSED_DIR = os.path.join(PROJECT_ROOT, "data", "processed")
 
 @st.cache_data
 def load_data(dataset_id):
@@ -45,16 +46,7 @@ def load_data(dataset_id):
             
     return raw_df, cleaned_df
 
-def apply_chart_style(fig):
-    fig.update_layout(
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        margin=dict(t=40, l=20, r=20, b=20),
-        font=dict(color="#334155"),
-        title_font=dict(color="#0F172A", size=16),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-    )
-    return fig
+from frontend.components.theme import apply_chart_style
 
 def main():
     st.title("DATA ANALYSIS")
@@ -130,6 +122,8 @@ def main():
                 try:
                     clean_res = httpx.post(f"{API_BASE_URL}/api/clean/{dataset_id}", timeout=60.0)
                     if clean_res.status_code == 200:
+                        st.session_state['processed_dataset_id'] = dataset_id
+                        st.session_state['processed_dataset_name'] = dataset_name
                         st.cache_data.clear()
                         st.rerun()
                     else:
@@ -141,6 +135,11 @@ def main():
         df = raw_df
 
     else:
+        # Also ensure session state is set if we loaded an already cleaned dataset
+        if 'processed_dataset_id' not in st.session_state:
+            st.session_state['processed_dataset_id'] = dataset_id
+            st.session_state['processed_dataset_name'] = dataset_name
+
         st.markdown("<h4 style='color: #10B981;'>🟢 Dataset Cleaned Successfully</h4>", unsafe_allow_html=True)
         
         clean_rows = len(cleaned_df)

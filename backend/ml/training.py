@@ -30,6 +30,11 @@ def train_model(dataset_path: str, target_col: str, model_type: str):
     df = df.dropna(subset=[target_col])
     
     X = df.drop(columns=[target_col])
+    
+    # Exclude ID columns
+    id_cols = [c for c in X.columns if c.lower().endswith('_id') or c.lower() == 'id']
+    X = X.drop(columns=id_cols)
+    
     y = df[target_col]
     
     # If target is categorical strings, encode to 0/1
@@ -96,12 +101,17 @@ def train_model(dataset_path: str, target_col: str, model_type: str):
     
     cm = confusion_matrix(y_test, y_pred).tolist()
     
+    try:
+        roc_auc = float(roc_auc_score(y_test, y_prob))
+    except ValueError:
+        roc_auc = "N/A"
+
     metrics = {
         "accuracy": float(accuracy_score(y_test, y_pred)),
         "precision": float(precision_score(y_test, y_pred, zero_division=0)),
         "recall": float(recall_score(y_test, y_pred, zero_division=0)),
         "f1_score": float(f1_score(y_test, y_pred, zero_division=0)),
-        "roc_auc": float(roc_auc_score(y_test, y_prob)),
+        "roc_auc": roc_auc,
         "confusion_matrix": cm,
         "training_time_sec": train_time
     }

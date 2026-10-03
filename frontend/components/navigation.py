@@ -59,6 +59,7 @@ def render_sidebar():
         max-width: {'0px' if collapsed else '290px'} !important;
         transition: width 0.3s ease;
         overflow-x: hidden;
+        padding-bottom: 80px !important;
         {'padding: 0 !important;' if collapsed else ''}
         {'border-right: none !important;' if collapsed else ''}
     }}

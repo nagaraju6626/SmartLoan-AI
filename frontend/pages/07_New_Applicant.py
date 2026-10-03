@@ -104,8 +104,9 @@ def render_field(f, feature_meta):
     label = f.replace("_", " ")
     if f not in feature_meta:
         # Fallback if no dataset available
-        val = st.session_state.get(f, "")
-        st.text_input(label, value=val, key=f)
+        if f not in st.session_state:
+            st.session_state[f] = ""
+        st.text_input(label, key=f)
         return
         
     f_meta = feature_meta[f]
@@ -119,21 +120,16 @@ def render_field(f, feature_meta):
         elif range_v > 100: step = 10.0
         elif range_v <= 1: step = 0.01
         
-        # If the key is already in session state, do not pass value=...
-        if f in st.session_state:
-            st.number_input(label, min_value=min_v, step=step, key=f)
-        else:
-            val = float(f_meta["default"])
-            st.number_input(label, min_value=min_v, value=val, step=step, key=f)
+        if f not in st.session_state:
+            st.session_state[f] = float(f_meta["default"])
+        st.number_input(label, min_value=min_v, step=step, key=f)
         
     elif f_meta["type"] == "categorical":
         opts = f_meta["options"]
-        if f in st.session_state:
-            st.selectbox(label, options=opts, key=f)
-        else:
+        if f not in st.session_state:
             val = f_meta["default"]
-            idx = opts.index(val) if val in opts else 0
-            st.selectbox(label, options=opts, index=idx, key=f)
+            st.session_state[f] = val if val in opts else opts[0]
+        st.selectbox(label, options=opts, key=f)
 
 def main():
     apply_custom_css()
@@ -192,9 +188,14 @@ def main():
             <small style="color:#64748B;">These thresholds are application-defined settings used to interpret model probabilities. They are not official banking standards.</small>
         </div>
         """, unsafe_allow_html=True)
+        if "low_risk_thresh" not in st.session_state:
+            st.session_state["low_risk_thresh"] = 0.75
+        if "medium_risk_thresh" not in st.session_state:
+            st.session_state["medium_risk_thresh"] = 0.50
+            
         t1, t2 = st.columns(2)
-        with t1: low_risk_thresh = st.slider("Low Risk Min Probability", 0.5, 1.0, 0.75, 0.01)
-        with t2: medium_risk_thresh = st.slider("Medium Risk Min Probability", 0.1, 0.9, 0.50, 0.01)
+        with t1: low_risk_thresh = st.slider("Low Risk Min Probability", 0.5, 1.0, key="low_risk_thresh", step=0.01)
+        with t2: medium_risk_thresh = st.slider("Medium Risk Min Probability", 0.1, 0.9, key="medium_risk_thresh", step=0.01)
 
     st.markdown("---")
 

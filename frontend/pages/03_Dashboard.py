@@ -196,19 +196,7 @@ def main():
 
     st.markdown("---")
 
-    # Helper for standard chart layout
-    def apply_chart_style(fig):
-        fig.update_layout(
-            plot_bgcolor="white",
-            paper_bgcolor="white",
-            margin=dict(t=40, l=20, r=20, b=20),
-            font=dict(color="#334155"),
-            title_font=dict(color="#0F172A", size=16),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-        )
-        fig.update_xaxes(showgrid=False, linecolor="#E2E8F0")
-        fig.update_yaxes(showgrid=True, gridcolor="#F1F5F9", linecolor="#E2E8F0")
-        return fig
+    from frontend.components.theme import apply_chart_style
 
     # Row 1: CIBIL Score Distribution | Approval Rate by CIBIL Range
     c1, c2 = st.columns(2)

@@ -1,0 +1,52 @@
+{
+    "version": "v20260929162627",
+    "algorithm": "random_forest",
+    "dataset_path": "data/uploads\\0d9f0447-15ad-4b2e-8b03-97f046c4a768_smart_loan_test_missing_duplicates.csv",
+    "training_date": "2026-09-29T16:26:27.861973",
+    "features": [
+        "Age",
+        "Employment_Years",
+        "Annual_Income",
+        "Coapplicant_Income",
+        "Loan_Amount",
+        "Loan_Term_Years",
+        "Cibil_Score",
+        "Existing_Loans",
+        "DTI_Ratio",
+        "Residential_Assets",
+        "Bank_Assets",
+        "Applicant_ID",
+        "Gender",
+        "Married",
+        "Dependents",
+        "Education",
+        "Self_Employed",
+        "Income_Verified",
+        "Loan_Purpose",
+        "Property_Area"
+    ],
+    "target": "Loan_Status",
+    "target_mapping": {
+        "1": "Approved",
+        "0": "Rejected"
+    },
+    "metrics": {
+        "accuracy": 0.5714285714285714,
+        "precision": 0.5714285714285714,
+        "recall": 1.0,
+        "f1_score": 0.7272727272727273,
+        "roc_auc": 0.6481481481481481,
+        "confusion_matrix": [
+            [
+                0,
+                9
+            ],
+            [
+                0,
+                12
+            ]
+        ],
+        "training_time_sec": 0.326845
+    },
+    "status": "Active"
+}

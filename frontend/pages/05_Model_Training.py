@@ -39,20 +39,11 @@ def load_data(dataset_id):
     except Exception:
         return None, False
 
-def apply_chart_style(fig):
-    fig.update_layout(
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        margin=dict(t=40, l=20, r=20, b=20),
-        font=dict(color="#334155"),
-        title_font=dict(color="#0F172A", size=16),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-    )
-    return fig
+from frontend.components.theme import apply_chart_style
 
 def main():
     st.title("MODEL TRAINING & COMPARISON")
-    st.markdown("Train multiple machine learning models, evaluate their performance, and select an active model.")
+    st.markdown("Train, evaluate, and activate machine learning models")
     st.markdown("---")
 
     if 'current_dataset_id' not in st.session_state:
@@ -73,56 +64,69 @@ def main():
     default_idx = cols.index(default_target) if default_target in cols else 0
 
     # --------------------------------------------------
-    # DATASET & TRAINING CONFIGURATION
+    # DATASET CONFIGURATION
     # --------------------------------------------------
-    st.markdown("### 📊 Dataset & Training Configuration")
+    st.markdown("### Dataset Configuration")
     
-    col_t1, col_t2 = st.columns(2)
-    with col_t1:
-        target_col = st.selectbox("Select Target Column", cols, index=default_idx)
-        
     total_samples = len(df)
-    train_samples = int(total_samples * 0.8)
-    test_samples = total_samples - train_samples
     
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Dataset", dataset_name)
-    c2.metric("Total Samples", f"{total_samples:,}")
-    c3.metric("Features", f"{len(cols):,}")
-    c4.metric("Train/Test Split", "80% / 20%")
+    if "target_col" not in st.session_state:
+        st.session_state["target_col"] = cols[default_idx] if default_idx < len(cols) else cols[0]
+        
+    config_card = f"""
+    <div style='background-color: #F8FAFC; padding: 20px; border-radius: 10px; border: 1px solid #E2E8F0; margin-bottom: 20px;'>
+        <p style='margin-bottom: 10px; font-size: 16px;'><b>Dataset:</b> <span style='word-wrap: break-word; color: #334155;'>{dataset_name}</span></p>
+        <p style='margin-bottom: 0; font-size: 16px;'>
+            <b>Samples:</b> <span style='color: #334155;'>{total_samples:,}</span> &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <b>Features:</b> <span style='color: #334155;'>{len(cols):,}</span> &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <b>Split:</b> <span style='color: #334155;'>80/20</span>
+        </p>
+    </div>
+    """
+    
+    col_t1, col_t2 = st.columns([1, 2])
+    with col_t1:
+        st.selectbox("Target Column", cols, key="target_col")
+        target_col = st.session_state["target_col"]
+        
+    st.markdown(config_card, unsafe_allow_html=True)
     
     # --------------------------------------------------
     # TRAINING READINESS
     # --------------------------------------------------
-    st.markdown("### ✅ Training Readiness")
+    st.markdown("### Training Readiness")
     r1, r2 = st.columns(2)
     with r1:
         st.markdown("✓ Dataset loaded")
         if target_col in cols:
-            st.markdown("✓ Target column detected")
+            st.markdown("✓ Target detected")
         else:
-            st.markdown("❌ Missing target column")
-        num_feats = df.select_dtypes(include=[np.number]).columns.tolist()
-        cat_feats = df.select_dtypes(exclude=[np.number]).columns.tolist()
-        st.markdown(f"✓ {len(num_feats)} numerical & {len(cat_feats)} categorical features detected")
+            st.markdown("❌ Missing target")
+        st.markdown("✓ Features detected")
     with r2:
         if df.isnull().sum().sum() == 0:
             st.markdown("✓ Missing values checked")
         else:
-            st.markdown("⚠️ Missing values present (will be imputed)")
+            st.markdown("⚠️ Missing values present")
         st.markdown("✓ Preprocessing configured")
         st.markdown("✓ Train/Test split ready")
 
-    st.markdown("---")
-
     # --------------------------------------------------
-    # SELECT MODELS
+    # MODELS TO TRAIN
     # --------------------------------------------------
-    st.markdown("### 🧠 Select Models")
+    st.markdown("### Models to Train")
+    
+    if "train_lr" not in st.session_state:
+        st.session_state["train_lr"] = True
+    if "train_rf" not in st.session_state:
+        st.session_state["train_rf"] = True
+    if "train_xgb" not in st.session_state:
+        st.session_state["train_xgb"] = True
+        
     m1, m2, m3 = st.columns(3)
-    with m1: train_lr = st.checkbox("Logistic Regression", value=True)
-    with m2: train_rf = st.checkbox("Random Forest", value=True)
-    with m3: train_xgb = st.checkbox("XGBoost", value=True)
+    with m1: train_lr = st.checkbox("Logistic Regression", key="train_lr")
+    with m2: train_rf = st.checkbox("Random Forest", key="train_rf")
+    with m3: train_xgb = st.checkbox("XGBoost", key="train_xgb")
     
     models_to_train = []
     if train_lr: models_to_train.append("logistic_regression")
@@ -133,7 +137,12 @@ def main():
     if "training_results" not in st.session_state:
         st.session_state["training_results"] = None
 
-    if st.button("Start Training", type="primary"):
+    st.markdown("<br>", unsafe_allow_html=True)
+    c_btn1, c_btn2, c_btn3 = st.columns([1, 2, 1])
+    with c_btn2:
+        start_btn = st.button("Start Training", type="primary", use_container_width=True)
+        
+    if start_btn:
         if not models_to_train:
             st.error("Please select at least one model to train.")
         else:
@@ -154,18 +163,71 @@ def main():
                     st.error(f"Failed to connect to backend: {str(e)}")
 
     results = st.session_state["training_results"]
+    success_results = [r for r in results if "error" not in r] if results else []
+
+    # Validate active model against current training results
+    active_ver = st.session_state.get('active_model_version')
+    active_name = st.session_state.get('active_model_name')
+    if success_results:
+        current_valid_versions = [r["version"] for r in success_results]
+        if active_ver not in current_valid_versions:
+            st.session_state['active_model_version'] = None
+            st.session_state['active_model_name'] = None
+            active_ver = None
+            active_name = None
+
+    # --------------------------------------------------
+    # MODEL PERFORMANCE SUMMARY (Always show active status)
+    # --------------------------------------------------
+    st.markdown("---")
+    st.markdown("### 🏆 Model Performance Summary")
+    
+    if active_ver:
+        status_html = f"<p><b>Currently Active Model:</b> <span style='color: #10B981; font-weight: bold;'>{active_name}</span> <code>({active_ver})</code></p>"
+    else:
+        status_html = "<p><b>Currently Active Model:</b> <span style='color: #EF4444; font-weight: bold;'>No active model selected. Please select a trained model.</span></p>"
+        
+    st.markdown(f"""
+    <div style='background-color: #F8FAFC; padding: 20px; border-radius: 10px; border: 1px solid #E2E8F0;'>
+        <h4 style='margin-top: 0; color: #0F172A;'>Active Model Status</h4>
+        <p><b>Models Successfully Trained:</b> {len(success_results)}</p>
+        {status_html}
+        <p><small>The active model is used globally by the New Applicant and Explainability systems.</small></p>
+    </div>
+    """, unsafe_allow_html=True)
+
     if not results:
         return
 
     st.markdown("---")
 
     # Filter out failures
-    success_results = [r for r in results if "error" not in r]
     if not success_results:
         st.error("All selected models failed to train.")
         for r in results:
             st.error(f"{r['algorithm']}: {r['error']}")
         return
+
+    # --------------------------------------------------
+    # ACTIVE MODEL SELECTION
+    # --------------------------------------------------
+    st.markdown("### 🎯 Active Model Selection")
+    
+    model_options = {f"{r['algorithm'].replace('_', ' ').title()} ({r['version']})": r for r in success_results}
+    
+    col_sel1, col_sel2 = st.columns([2, 1])
+    with col_sel1:
+        selected_model_key = st.selectbox("Select a trained model:", list(model_options.keys()))
+        
+    with col_sel2:
+        st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+        if st.button("Set Active Model", type="primary", use_container_width=True):
+            r = model_options[selected_model_key]
+            st.session_state['active_model_version'] = r["version"]
+            st.session_state['active_model_name'] = r["algorithm"].replace('_', ' ').title()
+            st.rerun()
+            
+    st.markdown("---")
 
     # --------------------------------------------------
     # MODEL COMPARISON SUMMARY
@@ -183,14 +245,20 @@ def main():
             })
         else:
             m = r["metrics"]
+            is_active = (r["version"] == active_ver)
+            status_text = "✅ Success (Active)" if is_active else "✅ Success"
+            
+            roc_auc_val = m.get('roc_auc')
+            roc_auc_str = f"{roc_auc_val*100:.2f}%" if isinstance(roc_auc_val, (float, int)) else "N/A"
+
             comp_data.append({
                 "Model": name,
                 "Accuracy": f"{m.get('accuracy',0)*100:.2f}%",
                 "Precision": f"{m.get('precision',0)*100:.2f}%",
                 "Recall": f"{m.get('recall',0)*100:.2f}%",
                 "F1 Score": f"{m.get('f1_score',0)*100:.2f}%",
-                "ROC-AUC": f"{m.get('roc_auc',0)*100:.2f}%",
-                "Status": "✅ Success"
+                "ROC-AUC": roc_auc_str,
+                "Status": status_text
             })
             
     st.dataframe(pd.DataFrame(comp_data), use_container_width=True, hide_index=True)
@@ -207,11 +275,12 @@ def main():
             {"Model": name, "Metric": "Precision", "Score": m.get('precision',0)*100},
             {"Model": name, "Metric": "Recall", "Score": m.get('recall',0)*100},
             {"Model": name, "Metric": "F1 Score", "Score": m.get('f1_score',0)*100},
-            {"Model": name, "Metric": "ROC-AUC", "Score": m.get('roc_auc',0)*100}
+            {"Model": name, "Metric": "ROC-AUC", "Score": m.get('roc_auc')*100 if isinstance(m.get('roc_auc'), (float, int)) else 0}
         ])
         
     df_chart = pd.DataFrame(chart_data)
     fig = px.bar(df_chart, x="Metric", y="Score", color="Model", barmode="group", title="Performance Comparison")
+    fig.update_layout(yaxis=dict(range=[0, 100]))
     st.plotly_chart(apply_chart_style(fig), use_container_width=True, key="performance_comparison_chart")
 
     st.markdown("---")
@@ -234,7 +303,10 @@ def main():
         c2.metric("Precision", f"{m.get('precision',0)*100:.2f}%")
         c3.metric("Recall", f"{m.get('recall',0)*100:.2f}%")
         c4.metric("F1 Score", f"{m.get('f1_score',0)*100:.2f}%")
-        c5.metric("ROC-AUC", f"{m.get('roc_auc',0)*100:.2f}%")
+        
+        roc_auc_val = m.get('roc_auc')
+        roc_auc_str = f"{roc_auc_val*100:.2f}%" if isinstance(roc_auc_val, (float, int)) else "N/A"
+        c5.metric("ROC-AUC", roc_auc_str)
         
         # Matrix and Importance side by side
         col_cm, col_fi = st.columns(2)
@@ -285,7 +357,8 @@ def main():
                         fi_df = fi_df.sort_values(by="Importance", ascending=False).head(10)
                         
                         fig_fi = px.bar(fi_df, x="Importance", y="Feature", orientation='h', color_discrete_sequence=["#3B82F6"])
-                        fig_fi.update_layout(margin=dict(l=0, r=0, t=0, b=0), height=250, plot_bgcolor="white")
+                        fig_fi = apply_chart_style(fig_fi)
+                        fig_fi.update_layout(margin=dict(l=0, r=0, t=0, b=0), height=250)
                         fig_fi.update_yaxes(categoryorder="total ascending")
                         st.plotly_chart(fig_fi, use_container_width=True, key=f"feature_importance_{model_key}_{ver}")
                     else:
@@ -295,29 +368,7 @@ def main():
             else:
                 st.info("Model file not found locally to compute feature importance.")
                 
-        if st.button(f"Set {alg} as Active Model", key=f"active_{r['algorithm']}_{ver}", type="primary"):
-            st.session_state['active_model_version'] = ver
-            st.session_state['active_model_name'] = alg
-            st.success(f"**{alg}** ({ver}) is now the active model for New Applicant predictions and Explainability!")
-            st.rerun()
-            
-        st.markdown("---")
-
-    # --------------------------------------------------
-    # MODEL PERFORMANCE SUMMARY
-    # --------------------------------------------------
-    active_ver = st.session_state.get('active_model_version', 'None')
-    active_name = st.session_state.get('active_model_name', 'None')
-    
-    st.markdown("### 🏆 Model Performance Summary")
-    st.markdown(f"""
-    <div style='background-color: #F8FAFC; padding: 20px; border-radius: 10px; border: 1px solid #E2E8F0;'>
-        <h4 style='margin-top: 0; color: #0F172A;'>Active Model Status</h4>
-        <p><b>Models Successfully Trained:</b> {len(success_results)}</p>
-        <p><b>Currently Active Model:</b> <span style='color: #10B981; font-weight: bold;'>{active_name}</span> <code>({active_ver})</code></p>
-        <p><small>The active model is used globally by the New Applicant and Explainability systems.</small></p>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown("---")
 
 if __name__ == "__main__":
     main()

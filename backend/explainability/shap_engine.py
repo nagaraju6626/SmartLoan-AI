@@ -42,29 +42,45 @@ def generate_shap_explanation(model_version: str, input_data: pd.DataFrame):
         # Fallback if extraction fails
         feature_names = [f"Feature_{i}" for i in range(X_transformed.shape[1])]
         
-    # Generate SHAP values
-    if hasattr(classifier, 'predict_proba') and type(classifier).__name__ in ['LogisticRegression', 'RandomForestClassifier']:
-        # TreeExplainer for Trees, LinearExplainer for Linear
-        if type(classifier).__name__ == 'RandomForestClassifier':
+    # Extract feature values for the applicant
+    if hasattr(X_transformed, 'toarray'):
+        X_arr = X_transformed.toarray()[0]
+    elif isinstance(X_transformed, np.ndarray):
+        X_arr = X_transformed[0]
+    else:
+        X_arr = np.zeros(len(feature_names))
+        
+    model_type = type(classifier).__name__
+    shap_values_to_plot = np.zeros(len(feature_names))
+    base_value = 0.0
+    
+    if model_type == 'LogisticRegression' or hasattr(classifier, 'coef_'):
+        # Explicitly calculate contribution = value * coefficient
+        coefs = classifier.coef_[0]
+        for i in range(len(feature_names)):
+            if i < len(coefs):
+                shap_values_to_plot[i] = float(X_arr[i]) * float(coefs[i])
+        base_value = float(classifier.intercept_[0]) if hasattr(classifier, 'intercept_') else 0.0
+    elif model_type in ['RandomForestClassifier', 'XGBClassifier', 'DecisionTreeClassifier']:
+        try:
+            # TreeExplainer does not require a background dataset by default
             explainer = shap.TreeExplainer(classifier)
-            # TreeExplainer returns list of arrays for classification (one for each class)
             shap_values = explainer.shap_values(X_transformed)
-            # For binary classification, we care about the positive class (class 1)
+            # Handle list output for classification
             if isinstance(shap_values, list):
                 shap_values_to_plot = shap_values[1][0]
+                base_value = explainer.expected_value[1] if isinstance(explainer.expected_value, (list, np.ndarray)) else explainer.expected_value
             else:
                 shap_values_to_plot = shap_values[0]
-            base_value = explainer.expected_value[1] if isinstance(explainer.expected_value, (list, np.ndarray)) else explainer.expected_value
-        else:
-            explainer = shap.LinearExplainer(classifier, X_transformed)
-            shap_values_to_plot = explainer.shap_values(X_transformed)[0]
-            base_value = explainer.expected_value
+                base_value = explainer.expected_value
+        except Exception:
+            # Fallback to feature_importances_ if SHAP fails for trees
+            if hasattr(classifier, 'feature_importances_'):
+                shap_values_to_plot = classifier.feature_importances_
     else:
-        # Generic explainer
-        explainer = shap.Explainer(classifier, X_transformed)
-        shap_values_obj = explainer(X_transformed)
-        shap_values_to_plot = shap_values_obj.values[0]
-        base_value = shap_values_obj.base_values[0]
+        # Fallback for unsupported models
+        if hasattr(classifier, 'feature_importances_'):
+            shap_values_to_plot = classifier.feature_importances_
         
     # Create the waterfall/bar plot data
     # We will return the values so the frontend can plot them using plotly

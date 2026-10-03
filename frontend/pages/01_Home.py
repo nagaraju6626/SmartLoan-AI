@@ -18,19 +18,46 @@ st.set_page_config(
 render_sidebar()
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 def get_kpis():
+    dataset_id = st.session_state.get('current_dataset_id')
+    if not dataset_id:
+        return None
     try:
-        response = httpx.get(f"{API_BASE_URL}/api/analytics/kpis", timeout=5.0)
-        if response.status_code == 200:
-            data = response.json()
-            return {
-                "total": data.get("total_applications", 1248),
-                "approved": data.get("approved_loans", 892),
-                "rejected": data.get("rejected_loans", 356),
-                "amount": data.get("total_value", "12.4 Cr")
-            }
-    except:
-        pass
-    return {"total": 1248, "approved": 892, "rejected": 356, "amount": "12.4 Cr"}
+        import pandas as pd
+        import os
+        from backend.ml.preprocessing import detect_columns
+        
+        file_path = os.path.join("data/processed", f"{dataset_id}_cleaned.csv")
+        if not os.path.exists(file_path):
+            raw_files = [f for f in os.listdir("data/uploads") if f.startswith(dataset_id)]
+            if not raw_files:
+                return None
+            file_path = os.path.join("data/uploads", raw_files[0])
+            
+        df = pd.read_csv(file_path)
+        mapping = detect_columns(df)
+        
+        total = len(df)
+        approved = 0
+        rejected = 0
+        amount = 0.0
+        
+        if "target" in mapping:
+            target_col = mapping["target"]
+            approved = len(df[df[target_col].astype(str).str.upper().isin(["APPROVED", "Y", "1", "YES"])])
+            rejected = len(df[df[target_col].astype(str).str.upper().isin(["REJECTED", "N", "0", "NO"])])
+            
+        if "loan_amount" in mapping:
+            amt_col = mapping["loan_amount"]
+            amount = pd.to_numeric(df[amt_col], errors='coerce').sum()
+            
+        return {
+            "total": total,
+            "approved": approved,
+            "rejected": rejected,
+            "amount": amount
+        }
+    except Exception as e:
+        return None
 kpis = get_kpis()
 import base64
 def get_base64_image():
@@ -102,7 +129,21 @@ render_header()
 # HERO SECTION
 st.markdown(f"""<div class="hero-section"><div class="hero-left"><div class="hero-label">AI-POWERED LOAN ANALYSIS</div><div class="hero-title">Smart Loan Risk &<br><span>Approval System</span></div><div class="hero-subtitle">Predict loan risk, analyze applicant data, and make smarter decisions<br>with Machine Learning and Explainable AI.</div><div class="hero-buttons"><a href="Data_Upload" target="_self" class="btn-primary">🚀 Get Started</a><a href="Dashboard" target="_self" class="btn-secondary">▶ View Demo</a></div><div class="hero-features"><span>🧠 AI Powered</span><span>🎯 High Accuracy</span><span>🛡️ Explainable AI</span><span>⚡ New Applicant</span></div></div><div class="hero-right"><div class="visual-core" style="background-image: url('data:image/jpeg;base64,{hero_img_b64}'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: transparent; border: none; box-shadow: none;"></div><div class="float-card fc-1"><div class="fc-title">Risk Prediction</div><div class="fc-value success">LOW RISK</div><div class="fc-sub">87% Confidence</div></div><div class="float-card fc-2"><div class="fc-title">Approval Chance</div><div class="fc-value success">92%</div><div class="fc-sub">High Probability</div></div><div class="float-card fc-3"><div class="fc-title">AI Analysis</div><div class="fc-list"><div>✓ Income Verified</div><div>✓ Low Default Risk</div><div>✓ Good Credit Profile</div></div></div><div class="float-card fc-4"><div class="fc-title">Decision</div><div class="fc-value success">✓ APPROVED</div></div></div></div>""", unsafe_allow_html=True)
 # KPI SECTION
-st.markdown(f"""<div class="kpi-grid"><div class="kpi-card"><div class="kpi-title">👥 Total Applications</div><div class="kpi-val">{kpis["total"]:,}</div><div class="kpi-trend trend-up">↑ 12% from last month</div></div><div class="kpi-card"><div class="kpi-title">🟢 Approved Loans</div><div class="kpi-val">{kpis["approved"]:,}</div><div class="kpi-trend trend-up">↑ 18% from last month</div></div><div class="kpi-card"><div class="kpi-title">🔴 Rejected Loans</div><div class="kpi-val">{kpis["rejected"]:,}</div><div class="kpi-trend trend-down">↓ 5% from last month</div></div><div class="kpi-card"><div class="kpi-title">₹ Total Loan Amount</div><div class="kpi-val">₹{kpis["amount"]}</div><div class="kpi-trend trend-up">↑ 22% from last month</div></div></div>""", unsafe_allow_html=True)
+if kpis is None:
+    st.markdown("""<div class="kpi-grid"><div class="kpi-card"><div class="kpi-title">👥 Total Applications</div><div class="kpi-val">—</div><div class="kpi-trend">Upload a dataset to view metrics</div></div><div class="kpi-card"><div class="kpi-title">🟢 Approved Loans</div><div class="kpi-val">—</div><div class="kpi-trend">Available after upload</div></div><div class="kpi-card"><div class="kpi-title">🔴 Rejected Loans</div><div class="kpi-val">—</div><div class="kpi-trend">Available after upload</div></div><div class="kpi-card"><div class="kpi-title">₹ Total Loan Amount</div><div class="kpi-val">—</div><div class="kpi-trend">Available after upload</div></div></div>""", unsafe_allow_html=True)
+else:
+    app_rate = (kpis["approved"] / kpis["total"] * 100) if kpis["total"] > 0 else 0
+    rej_rate = (kpis["rejected"] / kpis["total"] * 100) if kpis["total"] > 0 else 0
+    
+    amount_val = kpis["amount"]
+    if amount_val >= 10000000:
+        amount_str = f"₹{amount_val/10000000:.1f} Cr"
+    elif amount_val >= 100000:
+        amount_str = f"₹{amount_val/100000:.1f} L"
+    else:
+        amount_str = f"₹{amount_val:,.0f}"
+
+    st.markdown(f"""<div class="kpi-grid"><div class="kpi-card"><div class="kpi-title">👥 Total Applications</div><div class="kpi-val">{kpis["total"]:,}</div><div class="kpi-trend">Records in current dataset</div></div><div class="kpi-card"><div class="kpi-title">🟢 Approved Loans</div><div class="kpi-val">{kpis["approved"]:,}</div><div class="kpi-trend">{app_rate:.1f}% approval rate</div></div><div class="kpi-card"><div class="kpi-title">🔴 Rejected Loans</div><div class="kpi-val">{kpis["rejected"]:,}</div><div class="kpi-trend">{rej_rate:.1f}% rejection rate</div></div><div class="kpi-card"><div class="kpi-title">₹ Total Loan Amount</div><div class="kpi-val">{amount_str}</div><div class="kpi-trend">Total requested loan amount</div></div></div>""", unsafe_allow_html=True)
 # HOW IT WORKS
 st.markdown("""<div class="section-title">How It Works</div><div class="section-sub">From data to decision in four simple steps</div><div class="hiw-grid"><div class="hiw-card"><div class="hiw-num">01</div><div class="hiw-title">📤 Upload Data</div><div class="hiw-desc">Import applicant data from CSV or database</div></div><div class="hiw-arrow">→</div><div class="hiw-card"><div class="hiw-num">02</div><div class="hiw-title">🧠 AI Analysis</div><div class="hiw-desc">Machine learning models analyze risk factors</div></div><div class="hiw-arrow">→</div><div class="hiw-card"><div class="hiw-num">03</div><div class="hiw-title">📊 Get Insights</div><div class="hiw-desc">View predictions with explainable AI</div></div><div class="hiw-arrow">→</div><div class="hiw-card"><div class="hiw-num">04</div><div class="hiw-title">📄 Make Decisions</div><div class="hiw-desc">Approve or reject with confidence</div></div></div>""", unsafe_allow_html=True)
 # BOTTOM FEATURES
