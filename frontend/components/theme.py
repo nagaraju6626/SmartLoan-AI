@@ -58,18 +58,7 @@ def apply_theme():
             color: #1E293B !important;
         }
         
-        /* Force Hamburger Toggle Icon Visibility in ALL states */
-        div[data-testid="column"]:nth-of-type(1) button p,
-        div[data-testid="column"]:nth-of-type(1) button span,
-        div[data-testid="column"]:nth-of-type(1) button svg {
-            color: #334155 !important;
-            fill: #334155 !important;
-            stroke: #334155 !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            display: block !important;
-            text-indent: 0 !important;
-        }
+        
         </style>
         """
         st.markdown(light_css, unsafe_allow_html=True)

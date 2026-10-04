@@ -20,6 +20,25 @@ META_DIR = "models/metadata"
 os.makedirs(MODELS_DIR, exist_ok=True)
 os.makedirs(META_DIR, exist_ok=True)
 
+def encode_loan_status(y):
+    mapping = {
+        "Rejected": 0,
+        "Approved": 1,
+        "rejected": 0,
+        "approved": 1,
+        0: 0,
+        1: 1,
+        "0": 0,
+        "1": 1
+    }
+    encoded = y.map(mapping)
+    if encoded.isna().any():
+        invalid = y[encoded.isna()].unique().tolist()
+        raise ValueError(f"Invalid Loan_Status values: {invalid}. Expected 'Approved' or 'Rejected'.")
+    
+    reverse_mapping = {0: "Rejected", 1: "Approved"}
+    return encoded.astype(int), reverse_mapping
+
 def train_model(dataset_path: str, target_col: str, model_type: str):
     df = pd.read_csv(dataset_path)
     
@@ -37,28 +56,17 @@ def train_model(dataset_path: str, target_col: str, model_type: str):
     
     y = df[target_col]
     
-    # If target is categorical strings, encode to 0/1
-    # Very basic encoding for binary classification
-    target_mapping = None
-    if y.dtype == 'object' or y.dtype.name == 'category':
-        classes = y.unique()
-        if len(classes) == 2:
-            # Try to infer positive class
-            pos_class = classes[0]
-            for c in classes:
-                if str(c).lower() in ['y', 'yes', 'approved', '1', 'true']:
-                    pos_class = c
-                    break
-            y = (y == pos_class).astype(int)
-            target_mapping = {int(1): str(pos_class), int(0): str([c for c in classes if c != pos_class][0])}
-        else:
-            raise ValueError("Only binary classification is currently supported.")
+    # Ensure target is cleanly encoded
+    y, target_mapping = encode_loan_status(y)
+    
+    if y.nunique() < 2:
+        raise ValueError("Training requires both Approved and Rejected loan records.")
             
     numeric_features = X.select_dtypes(include=['int64', 'float64']).columns.tolist()
     categorical_features = X.select_dtypes(include=['object', 'category']).columns.tolist()
     
     # Prevent Data Leakage: Split first
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),

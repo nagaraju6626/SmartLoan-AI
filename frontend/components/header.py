@@ -234,13 +234,11 @@ def render_header():
 
     
 
-    col0, col1, col4 = st.columns([0.4, 6.1, 1.5], vertical_alignment="center")
+    col1, col2 = st.columns([6.5, 1.5], vertical_alignment="center")
 
     
 
-    with col0:
-
-        st.button("☰", on_click=toggle_sidebar, use_container_width=True, key="header_sidebar_toggle")
+    
 
         
 
@@ -290,7 +288,7 @@ def render_header():
 
     
 
-    with col4:
+    with col2:
 
         # User profile
 

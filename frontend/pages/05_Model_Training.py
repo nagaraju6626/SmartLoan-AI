@@ -157,8 +157,12 @@ def main():
                 try:
                     train_res = httpx.post(f"{API_BASE_URL}/api/models/train", json=payload, timeout=120.0)
                     if train_res.status_code == 200:
-                        st.session_state["training_results"] = train_res.json()["results"]
-                        st.success("Training completed successfully!")
+                        train_results = train_res.json()["results"]
+                        st.session_state["training_results"] = train_results
+                        if any("error" not in r for r in train_results):
+                            st.success("Training completed successfully!")
+                        else:
+                            st.error("All selected models failed to train.")
                     else:
                         st.error(f"Training failed: {train_res.json().get('detail')}")
                 except Exception as e:
@@ -209,6 +213,11 @@ def main():
         for r in results:
             st.error(f"{r['algorithm']}: {r['error']}")
         return
+        
+    failed_results = [r for r in results if "error" in r]
+    if failed_results:
+        for r in failed_results:
+            st.warning(f"Failed to train {r['algorithm']}: {r['error']}")
 
     # --------------------------------------------------
     # ACTIVE MODEL SELECTION
