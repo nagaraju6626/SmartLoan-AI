@@ -73,8 +73,10 @@ def draw_header_footer(c, page_num):
     c.drawString(55, H-55, "Business Report")
     
     # Date
-    from datetime import datetime
-    c.drawString(W-120, H-40, datetime.now().strftime("%Y-%m-%d %H:%M"))
+    from datetime import datetime, timezone, timedelta
+    ist = timezone(timedelta(hours=5, minutes=30))
+    dt_str = datetime.now(ist).strftime("%d %B %Y, %I:%M %p IST")
+    c.drawRightString(W-40, H-40, f"Generated On: {dt_str}")
     
     # Divider
     c.setStrokeColor(colors.HexColor("#BFDBFE"))
@@ -170,9 +172,12 @@ async def generate_report(req: ReportRequest):
         
         c.setFont("Helvetica-Bold", 10)
         c.setFillColor(colors.HexColor("#64748B"))
+        from datetime import datetime, timezone, timedelta
+        ist_now = datetime.now(timezone(timedelta(hours=5, minutes=30)))
+        
         details = [
             ("Report Type:", "Business Report"),
-            ("Generated On:", pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")),
+            ("Generated On:", ist_now.strftime("%d %B %Y, %I:%M %p IST")),
             ("Total Records:", f"{len(df):,}"),
             ("Total Columns:", str(len(df.columns))),
             ("Target Column:", target_col),
@@ -275,11 +280,19 @@ async def generate_report(req: ReportRequest):
         y = draw_section_title(c, 730, f"4. Target Analysis ({target_col})")
         
         if target_col in df.columns:
-            vc = df[target_col].value_counts()
-            app_cnt = vc.get(1, 0)
-            rej_cnt = vc.get(0, 0)
-            app_pct = app_cnt/len(df)*100
-            rej_pct = rej_cnt/len(df)*100
+            temp_target = df[target_col].astype(str).str.strip().str.lower()
+            temp_target = temp_target[temp_target != 'nan']
+            approved_vals = ['1', '1.0', 'y', 'yes', 'approved', 'true']
+            
+            total_target = len(temp_target)
+            if total_target > 0:
+                app_cnt = temp_target.isin(approved_vals).sum()
+                rej_cnt = total_target - app_cnt
+                app_pct = (app_cnt / total_target) * 100
+                rej_pct = (rej_cnt / total_target) * 100
+            else:
+                app_cnt = rej_cnt = app_pct = rej_pct = 0
+            
             
             draw_kpi_card(c, 40, y-80, 240, 70, "APPROVED (1)", f"{app_cnt:,} ({app_pct:.1f}%)", title_color="#047857", val_color="#10B981", bg_color="#ECFDF5", border_color="#A7F3D0")
             draw_kpi_card(c, 300, y-80, 240, 70, "REJECTED (0)", f"{rej_cnt:,} ({rej_pct:.1f}%)", title_color="#B91C1C", val_color="#EF4444", bg_color="#FEF2F2", border_color="#FECACA")
@@ -407,9 +420,21 @@ async def generate_report(req: ReportRequest):
                 "DTI Ratio": "DTI_Ratio"
             }
             actual_col = col_map.get(title_clean)
+            matched_col = None
             
-            if actual_col and actual_col in df.columns:
-                vals = pd.to_numeric(df[actual_col], errors="coerce").dropna()
+            if actual_col:
+                if actual_col in df.columns:
+                    matched_col = actual_col
+                else:
+                    target_clean = actual_col.replace('_', '').lower()
+                    for c_name in df.columns:
+                        if c_name.replace('_', '').lower() == target_clean:
+                            matched_col = c_name
+                            break
+            
+            if matched_col:
+                raw_vals = df[matched_col].astype(str).str.replace(r'[$,£€ ]', '', regex=True)
+                vals = pd.to_numeric(raw_vals, errors="coerce").dropna()
                 vals = vals[~np.isinf(vals)]
                 
                 if len(vals) > 1:
