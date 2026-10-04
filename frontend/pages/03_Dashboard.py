@@ -24,19 +24,12 @@ render_header()
 PROCESSED_DIR = "data/processed"
 UPLOAD_DIR = "data/uploads"
 
-@st.cache_data
 def load_dashboard_data(dataset_id):
-    # Try processed first
-    file_path = os.path.join(PROCESSED_DIR, f"{dataset_id}_cleaned.csv")
-    if not os.path.exists(file_path):
-        raw_files = [f for f in os.listdir(UPLOAD_DIR) if f.startswith(dataset_id)]
-        if not raw_files:
-            return None
-        file_path = os.path.join(UPLOAD_DIR, raw_files[0])
-    try:
-        return pd.read_csv(file_path)
-    except Exception:
-        return None
+    if 'cleaned_df' in st.session_state and st.session_state['cleaned_df'] is not None:
+        return st.session_state['cleaned_df']
+    elif 'raw_df' in st.session_state and st.session_state['raw_df'] is not None:
+        return st.session_state['raw_df']
+    return None
 
 def main():
     st.title("SMART LOAN DASHBOARD")

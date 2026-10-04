@@ -63,8 +63,10 @@ def apply_custom_css():
     """, unsafe_allow_html=True)
 
 def load_sample(dataset_path, features):
-    if dataset_path and os.path.exists(dataset_path):
-        df = pd.read_csv(dataset_path)
+    df = st.session_state.get('cleaned_df')
+    if df is None:
+        df = st.session_state.get('raw_df')
+    if df is not None:
         sample = df.sample(1).iloc[0]
         for f in features:
             if f in sample and not pd.isna(sample[f]):
@@ -85,10 +87,11 @@ def reset_form(features):
 
 def get_feature_metadata(dataset_path, features):
     meta = {}
-    if not dataset_path or not os.path.exists(dataset_path):
+    df = st.session_state.get('cleaned_df')
+    if df is None:
+        df = st.session_state.get('raw_df')
+    if df is None:
         return meta
-        
-    df = pd.read_csv(dataset_path)
     for f in features:
         if f in df.columns:
             if pd.api.types.is_numeric_dtype(df[f]):

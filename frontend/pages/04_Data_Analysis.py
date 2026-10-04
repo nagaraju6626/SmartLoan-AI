@@ -33,27 +33,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 UPLOAD_DIR = os.path.join(PROJECT_ROOT, "data", "uploads")
 PROCESSED_DIR = os.path.join(PROJECT_ROOT, "data", "processed")
 
-@st.cache_data
 def load_data(dataset_id):
-    raw_df = None
-    cleaned_df = None
-    
-    # Load Raw
-    raw_files = [f for f in os.listdir(UPLOAD_DIR) if f.startswith(dataset_id)]
-    if raw_files:
-        try:
-            raw_df = pd.read_csv(os.path.join(UPLOAD_DIR, raw_files[0]))
-        except Exception:
-            pass
-            
-    # Load Cleaned
-    cleaned_path = os.path.join(PROCESSED_DIR, f"{dataset_id}_cleaned.csv")
-    if os.path.exists(cleaned_path):
-        try:
-            cleaned_df = pd.read_csv(cleaned_path)
-        except Exception:
-            pass
-            
+    # Fetch from session state as Streamlit Cloud does not share filesystem with the deployed backend
+    raw_df = st.session_state.get('raw_df', None)
+    cleaned_df = st.session_state.get('cleaned_df', None)
     return raw_df, cleaned_df
 
 from frontend.components.theme import apply_chart_style
@@ -62,7 +45,7 @@ def main():
     st.title("DATA ANALYSIS")
 
     if 'current_dataset_id' not in st.session_state:
-        st.warning("Please upload or select a dataset from the Data Upload page first.")
+        st.warning("No dataset uploaded. Please upload a dataset first.")
         return
 
     dataset_id = st.session_state['current_dataset_id']
@@ -73,7 +56,7 @@ def main():
     
     raw_df, cleaned_df = load_data(dataset_id)
     if raw_df is None:
-        st.error("Failed to load original dataset.")
+        st.error("Failed to load original dataset. Please return to Data Upload and upload the file again.")
         return
 
     # --------------------------------------------
@@ -134,6 +117,14 @@ def main():
                     if clean_res.status_code == 200:
                         st.session_state['processed_dataset_id'] = dataset_id
                         st.session_state['processed_dataset_name'] = dataset_name
+                        
+                        # Generate cleaned_df locally to avoid relying on backend filesystem
+                        try:
+                            from backend.ml.preprocessing import clean_dataset
+                            st.session_state['cleaned_df'] = clean_dataset(raw_df)
+                        except Exception as e:
+                            st.error(f"Failed to process dataset locally: {e}")
+                            
                         st.cache_data.clear()
                         st.rerun()
                     else:
