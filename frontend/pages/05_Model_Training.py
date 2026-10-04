@@ -1,4 +1,5 @@
 import streamlit as st
+from frontend.components.theme import apply_dataframe_style
 import httpx
 import os
 import pandas as pd
@@ -15,6 +16,12 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from frontend.components.navigation import render_sidebar
 from frontend.components.header import render_header
 from backend.ml.preprocessing import detect_columns
+
+
+# --- Authentication Check ---
+if not st.session_state.get("authenticated", False):
+    st.switch_page("pages/00_Login.py")
+# ----------------------------
 
 render_sidebar()
 render_header()
@@ -261,7 +268,7 @@ def main():
                 "Status": status_text
             })
             
-    st.dataframe(pd.DataFrame(comp_data), use_container_width=True, hide_index=True)
+    st.dataframe(apply_dataframe_style(pd.DataFrame(comp_data)), use_container_width=True, hide_index=True)
 
     # --------------------------------------------------
     # VISUAL MODEL COMPARISON
@@ -317,7 +324,7 @@ def main():
             cm = m.get('confusion_matrix')
             if cm:
                 cm_df = pd.DataFrame(cm, index=["Actual 0", "Actual 1"], columns=["Predicted 0", "Predicted 1"])
-                st.dataframe(cm_df, use_container_width=True, key=f"confusion_matrix_{model_key}_{ver}")
+                st.dataframe(apply_dataframe_style(cm_df), use_container_width=True, key=f"confusion_matrix_{model_key}_{ver}")
                 
         with col_fi:
             st.markdown("**Feature Importance / Influence**")

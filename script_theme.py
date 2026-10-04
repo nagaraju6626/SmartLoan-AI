@@ -1,32 +1,29 @@
-﻿import re
+import re
 
-file_path = 'frontend/components/theme.py'
-with open(file_path, 'r', encoding='utf-8') as f:
+with open("frontend/components/theme.py", "r", encoding="utf-8") as f:
     content = f.read()
 
-# CSS to inject
-css_fix = """
-    /* Force Hamburger Toggle Icon Visibility in ALL states */
-    div[data-testid="column"]:nth-of-type(1) button p,
-    div[data-testid="column"]:nth-of-type(1) button span,
-    div[data-testid="column"]:nth-of-type(1) button svg {
-        color: #334155 !important;
-        fill: #334155 !important;
-        stroke: #334155 !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        display: block !important;
-        text-indent: 0 !important;
-    }
-"""
+# Remove initialize_theme and toggle_theme functions
+pattern = re.compile(r'def initialize_theme\(\):.*?def apply_theme\(\):', re.DOTALL)
+content = pattern.sub('def apply_theme():', content)
 
-# Insert right before the closing </style> of light_css
-if '</style>' in content:
-    # Find the last occurrence of </style>
-    parts = content.rsplit('</style>', 1)
-    content = parts[0] + css_fix + '    </style>' + parts[1]
+# Remove initialize_theme() and theme = st.session_state.theme from apply_theme()
+content = content.replace('    initialize_theme()\n', '')
+content = content.replace('    theme = st.session_state.theme\n', '    theme = "light"\n')
 
-with open(file_path, 'w', encoding='utf-8') as f:
+# Remove the dark CSS block in apply_theme:
+# It's inside `if theme == "light": ... else: dark_css = ...`
+# Let's just find the `else:` block and remove it. We'll use a regex that matches `    else:\n        dark_css = """\n        <style>\n.*?        """\n        st.markdown\(dark_css, unsafe_allow_html=True\)`
+dark_css_pattern = re.compile(r'    else:\n        dark_css = """.*?        st\.markdown\(dark_css, unsafe_allow_html=True\)', re.DOTALL)
+content = dark_css_pattern.sub('', content)
+
+# We can also just remove the `if theme == "light":` and unindent the light_css, but keeping the `if theme == "light":` is fine if `theme = "light"` is hardcoded.
+
+# In apply_chart_style(fig):
+content = content.replace('    theme = st.session_state.get("theme", "light")\n', '    theme = "light"\n')
+
+# In apply_dataframe_style(df):
+content = content.replace('        theme = st.session_state.get("theme", "light")\n', '        theme = "light"\n')
+
+with open("frontend/components/theme.py", "w", encoding="utf-8") as f:
     f.write(content)
-
-print("CSS injected successfully.")

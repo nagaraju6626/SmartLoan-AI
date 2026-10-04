@@ -1,0 +1,106 @@
+Applicant_ID,Age,Gender,Married,Dependents,Education,Employment_Years,Annual_Income,Coapplicant_Income,Self_Employed,Income_Verified,Loan_Amount,Loan_Term_Years,Loan_Purpose,Cibil_Score,Existing_Loans,DTI_Ratio,Residential_Assets,Bank_Assets,Property_Area,Loan_Status
+TEST1001,59,Female,Yes,2,Not Graduate,6.0,277764.0,299985.0,No,Yes,589542.0,7,Education,730.0,1.0,0.43,556701.0,1569123.0,Rural,Approved
+TEST1002,49,Male,No,3+,Not Graduate,24.0,739998.0,70640.0,No,No,1142814.0,15,Education,608.0,1.0,0.58,3047569.0,1921214.0,Rural,Approved
+TEST1003,35,Male,Yes,0,Not Graduate,3.0,765427.0,196582.0,No,No,51252.0,3,Home,436.0,2.0,0.8,4628120.0,1117850.0,Semiurban,Approved
+TEST1004,63,Male,No,0,Not Graduate,12.0,537153.0,219798.0,No,Yes,876196.0,25,Business,501.0,3.0,0.64,1270464.0,1182117.0,Rural,Approved
+TEST1005,28,Male,Yes,3+,Not Graduate,19.0,92215.0,61476.0,No,No,914141.0,25,Personal,735.0,3.0,0.22,785332.0,1102523.0,Semiurban,Rejected
+TEST1006,41,Male,Yes,3+,Graduate,0.0,,306955.0,No,Yes,365826.0,2,Vehicle,612.0,4.0,0.07,767950.0,1726470.0,Semiurban,Approved
+TEST1007,59,Female,Yes,2,Graduate,7.0,228861.0,167280.0,Yes,Yes,655605.0,5,Home,416.0,4.0,0.26,166472.0,1243268.0,Semiurban,Approved
+TEST1008,39,Male,Yes,1,Not Graduate,13.0,1027168.0,151222.0,Yes,Yes,377359.0,30,Personal,543.0,5.0,0.53,397710.0,48874.0,Semiurban,Approved
+TEST1009,43,,No,3+,Not Graduate,15.0,380612.0,71180.0,Yes,No,56949.0,10,Home,836.0,5.0,0.09,4317048.0,1622572.0,Urban,Rejected
+TEST1010,31,Male,No,0,Graduate,13.0,34435.0,174358.0,Yes,No,813185.0,15,Education,374.0,0.0,0.45,3188729.0,1123129.0,Urban,Approved
+TEST1011,31,Female,Yes,2,Graduate,11.0,472556.0,112856.0,Yes,No,367537.0,7,Vehicle,685.0,1.0,0.53,4785956.0,592632.0,Rural,Approved
+TEST1012,44,Male,Yes,3+,Not Graduate,18.0,890264.0,330594.0,Yes,No,712301.0,3,Personal,509.0,4.0,0.32,2850171.0,1884146.0,Urban,Approved
+TEST1013,56,Male,No,0,Graduate,22.0,103781.0,186141.0,Yes,No,600222.0,25,Personal,,3.0,0.67,910775.0,709662.0,Urban,Approved
+TEST1014,60,Female,Yes,0,Not Graduate,14.0,216475.0,374032.0,No,Yes,830722.0,15,Personal,717.0,2.0,0.14,2596874.0,571926.0,Rural,Approved
+TEST1015,44,Female,Yes,1,Graduate,27.0,185196.0,110448.0,No,Yes,526467.0,10,Personal,646.0,3.0,0.11,558924.0,1126825.0,Rural,Approved
+TEST1016,23,Female,Yes,2,Not Graduate,1.0,251507.0,14397.0,Yes,Yes,406600.0,30,Personal,828.0,1.0,0.63,3881185.0,1940873.0,Rural,Approved
+TEST1017,42,Male,No,2,Graduate,1.0,331063.0,178031.0,Yes,Yes,1024304.0,2,Home,478.0,5.0,0.45,4373656.0,527007.0,Urban,Approved
+TEST1018,22,Female,No,1,Not Graduate,22.0,789121.0,393944.0,No,No,,10,Vehicle,481.0,3.0,0.6,4012595.0,678250.0,Urban,Approved
+TEST1019,44,Male,No,1,Graduate,30.0,801665.0,119180.0,Yes,Yes,513389.0,15,Education,324.0,0.0,0.4,2290435.0,470452.0,Rural,Approved
+TEST1020,64,Male,Yes,2,Graduate,21.0,1194748.0,66234.0,Yes,No,120390.0,10,Education,479.0,1.0,0.25,431413.0,1478301.0,Semiurban,Approved
+TEST1021,50,Female,Yes,2,Not Graduate,18.0,1430478.0,39954.0,No,Yes,757689.0,15,Education,800.0,5.0,0.71,1352564.0,42534.0,Rural,Rejected
+TEST1022,58,Female,No,3+,Graduate,,509963.0,178352.0,Yes,No,303490.0,15,Education,460.0,2.0,0.69,2424050.0,495518.0,Semiurban,Rejected
+TEST1023,22,Male,No,3+,Not Graduate,25.0,1392293.0,79459.0,No,No,415340.0,20,Home,476.0,5.0,0.61,4165100.0,616529.0,Semiurban,Approved
+TEST1024,41,Male,No,1,Graduate,30.0,1132677.0,195004.0,Yes,Yes,483027.0,7,Business,584.0,0.0,0.27,863561.0,412003.0,Rural,Approved
+TEST1025,53,Female,No,3+,Not Graduate,29.0,313790.0,200968.0,No,Yes,700199.0,25,Vehicle,362.0,1.0,0.52,302186.0,126209.0,Rural,Approved
+TEST1026,32,Female,Yes,0,Graduate,28.0,915617.0,59163.0,No,Yes,273777.0,20,Personal,455.0,2.0,0.34,3207393.0,442061.0,Rural,Approved
+TEST1027,42,Female,No,3+,Not Graduate,21.0,572337.0,51934.0,No,Yes,909909.0,30,Business,768.0,0.0,,3828464.0,1237580.0,Urban,Rejected
+TEST1028,64,Male,Yes,3+,Graduate,25.0,1433836.0,195967.0,Yes,No,1104145.0,20,Education,348.0,5.0,0.78,1026553.0,616412.0,Semiurban,Approved
+TEST1029,45,Male,No,0,Not Graduate,25.0,675419.0,316242.0,No,Yes,644124.0,5,Business,383.0,0.0,0.16,1235202.0,1664523.0,Urban,Rejected
+TEST1030,47,Male,Yes,1,Graduate,21.0,458374.0,5486.0,Yes,Yes,678861.0,5,Vehicle,660.0,1.0,0.81,145271.0,164134.0,Urban,Approved
+TEST1031,62,Male,No,0,Not Graduate,16.0,745777.0,139407.0,Yes,No,479802.0,25,Personal,447.0,4.0,0.41,2215685.0,1124289.0,Rural,Approved
+TEST1032,48,Male,No,3+,Not Graduate,19.0,1445946.0,,Yes,Yes,308090.0,10,Personal,641.0,0.0,0.2,3743797.0,1791199.0,Urban,Rejected
+TEST1033,36,Male,No,1,Not Graduate,9.0,912225.0,126020.0,Yes,Yes,1143578.0,7,Vehicle,775.0,0.0,0.48,1514542.0,488972.0,Rural,Rejected
+TEST1034,35,Female,No,3+,Graduate,5.0,296967.0,102795.0,No,Yes,821954.0,25,Vehicle,362.0,5.0,0.75,4180656.0,977965.0,Semiurban,Rejected
+TEST1035,64,Male,Yes,0,Not Graduate,14.0,216232.0,220184.0,No,Yes,711614.0,15,Education,659.0,5.0,0.64,2930184.0,1123994.0,Rural,Rejected
+TEST1036,23,Male,No,0,,21.0,1377695.0,142202.0,Yes,Yes,729574.0,3,Personal,626.0,2.0,0.7,76898.0,984176.0,Urban,Approved
+TEST1037,57,Male,Yes,3+,Not Graduate,10.0,34540.0,349652.0,Yes,No,548870.0,7,Business,440.0,5.0,0.58,3295097.0,1176808.0,Urban,Rejected
+TEST1038,27,Female,Yes,2,Graduate,27.0,1471403.0,237027.0,No,Yes,252846.0,7,Home,514.0,3.0,0.6,288316.0,520551.0,Rural,Approved
+TEST1039,41,Male,Yes,2,Not Graduate,4.0,576951.0,118324.0,Yes,Yes,716997.0,15,Home,734.0,1.0,0.73,2008954.0,163038.0,Rural,Rejected
+TEST1040,29,Male,Yes,0,Graduate,0.0,1125567.0,322710.0,No,Yes,1122647.0,15,Vehicle,617.0,1.0,0.25,1829553.0,990049.0,Urban,Approved
+TEST1041,59,Female,No,0,Graduate,7.0,213751.0,197775.0,Yes,Yes,1078455.0,2,Education,331.0,4.0,0.44,4088657.0,930491.0,Semiurban,Rejected
+TEST1042,38,Male,Yes,2,Not Graduate,20.0,1439902.0,289336.0,Yes,Yes,962259.0,25,Home,584.0,4.0,0.23,3041341.0,1216959.0,,Approved
+TEST1043,24,Male,Yes,2,Graduate,27.0,643992.0,263206.0,No,No,222312.0,15,Personal,604.0,1.0,0.84,1039504.0,1866583.0,Rural,Approved
+TEST1044,45,Male,Yes,3+,Graduate,11.0,74115.0,84076.0,Yes,Yes,476650.0,5,Vehicle,728.0,4.0,0.81,4087810.0,1374572.0,Semiurban,Approved
+TEST1045,34,Male,No,3+,Not Graduate,11.0,1426727.0,89780.0,No,No,381868.0,30,Business,776.0,2.0,0.08,2105058.0,258722.0,Urban,Rejected
+TEST1046,29,Male,No,2,Graduate,4.0,768583.0,152617.0,Yes,No,978818.0,3,Vehicle,585.0,5.0,0.61,4988023.0,132079.0,Rural,Approved
+TEST1047,46,Female,No,3+,Graduate,6.0,1265538.0,21689.0,Yes,Yes,107108.0,25,Business,443.0,1.0,0.79,4909384.0,202053.0,Urban,Approved
+TEST1048,22,Female,No,3+,Graduate,3.0,746747.0,273318.0,Yes,Yes,1135244.0,5,Vehicle,723.0,4.0,0.19,1675843.0,,Urban,Approved
+TEST1049,40,Female,Yes,1,Not Graduate,5.0,1222719.0,350605.0,No,Yes,335205.0,10,Vehicle,318.0,1.0,0.5,34701.0,1227165.0,Semiurban,Approved
+TEST1050,48,Male,Yes,3+,Graduate,12.0,561226.0,388318.0,Yes,Yes,180560.0,15,Vehicle,317.0,3.0,0.78,3229028.0,1551814.0,Rural,Rejected
+TEST1051,27,Male,No,0,Not Graduate,19.0,977699.0,365177.0,Yes,No,1097172.0,15,Business,670.0,0.0,0.08,1721610.0,1077833.0,Rural,Approved
+TEST1052,64,Male,Yes,3+,Graduate,29.0,378824.0,9348.0,Yes,Yes,197979.0,7,Business,474.0,5.0,0.61,2180712.0,480488.0,Semiurban,Rejected
+TEST1053,28,Female,Yes,3+,Graduate,14.0,1077576.0,38102.0,,Yes,798589.0,5,Vehicle,493.0,1.0,0.29,2339767.0,435423.0,Urban,Approved
+TEST1054,55,Male,Yes,2,Graduate,2.0,750948.0,74460.0,No,Yes,101745.0,7,Home,801.0,0.0,0.79,2614235.0,1192929.0,Urban,Approved
+TEST1055,34,Male,No,0,Not Graduate,22.0,912474.0,364778.0,No,Yes,141865.0,2,Education,412.0,4.0,0.83,491036.0,323390.0,Urban,Rejected
+TEST1056,37,Female,No,3+,Graduate,7.0,1429330.0,89930.0,Yes,Yes,1122200.0,7,Education,413.0,0.0,0.81,327304.0,263579.0,Urban,Rejected
+TEST1057,56,Male,Yes,3+,Graduate,19.0,276492.0,6801.0,No,Yes,73321.0,2,Education,521.0,5.0,0.43,2462616.0,1278523.0,Rural,Approved
+TEST1058,60,Female,No,1,Not Graduate,15.0,516072.0,103150.0,Yes,No,453704.0,2,Business,563.0,1.0,0.74,2710241.0,1280334.0,Rural,Approved
+TEST1059,24,Female,No,,Graduate,12.0,1111880.0,203339.0,Yes,No,859006.0,15,Business,354.0,3.0,0.73,3433803.0,1664221.0,Semiurban,Rejected
+TEST1060,22,Female,No,3+,Not Graduate,17.0,529999.0,179208.0,Yes,Yes,977982.0,10,Home,757.0,4.0,0.31,1142953.0,1206308.0,Semiurban,Approved
+TEST1061,26,Male,No,1,Not Graduate,27.0,356593.0,154697.0,No,Yes,236717.0,7,Education,461.0,1.0,0.71,3961352.0,1971164.0,Rural,Rejected
+TEST1062,62,Male,No,2,Graduate,9.0,632274.0,213945.0,No,Yes,1078202.0,5,Education,679.0,5.0,0.08,3978702.0,999701.0,Rural,Rejected
+TEST1063,24,Male,Yes,3+,Not Graduate,29.0,176836.0,231915.0,No,No,233868.0,2,Vehicle,386.0,4.0,0.53,4059175.0,931011.0,Urban,Rejected
+TEST1064,49,Male,No,1,Graduate,18.0,133940.0,203664.0,No,Yes,709792.0,15,Business,354.0,2.0,0.23,,1776531.0,Urban,Approved
+TEST1065,38,Male,Yes,0,Not Graduate,16.0,1028531.0,208124.0,No,No,145257.0,3,Education,775.0,0.0,0.15,3597706.0,1656671.0,Semiurban,Rejected
+TEST1066,46,Male,Yes,2,Not Graduate,23.0,849926.0,1542.0,No,Yes,638579.0,25,Home,477.0,5.0,0.11,4506554.0,1487331.0,Rural,Approved
+TEST1067,64,Male,No,0,Graduate,30.0,1339093.0,283821.0,No,Yes,260176.0,10,Home,690.0,2.0,0.61,605409.0,1950961.0,Semiurban,Approved
+TEST1068,54,Female,Yes,0,Not Graduate,18.0,692521.0,177804.0,No,Yes,240471.0,20,Education,648.0,1.0,0.32,1074135.0,138563.0,Rural,Approved
+TEST1069,30,Male,Yes,1,Not Graduate,27.0,904090.0,181415.0,No,Yes,964032.0,3,Business,307.0,3.0,0.63,2989179.0,783066.0,Urban,Approved
+TEST1070,56,Female,Yes,3+,Not Graduate,25.0,410777.0,39081.0,Yes,,522930.0,25,Home,612.0,4.0,0.1,1725690.0,1554623.0,Semiurban,Rejected
+TEST1071,34,Male,No,1,Not Graduate,22.0,576638.0,193928.0,No,No,967559.0,3,Vehicle,742.0,0.0,0.3,3280772.0,705552.0,Semiurban,Rejected
+TEST1072,51,Male,No,1,Not Graduate,25.0,574639.0,355249.0,No,Yes,685605.0,7,Home,627.0,4.0,0.48,4157893.0,1958805.0,Rural,Rejected
+TEST1073,35,Male,Yes,1,Graduate,4.0,637956.0,219930.0,No,Yes,439593.0,2,Personal,353.0,1.0,0.68,403119.0,326032.0,Urban,Approved
+TEST1074,28,Female,No,1,Not Graduate,25.0,663873.0,281209.0,No,No,865131.0,10,Personal,538.0,4.0,0.31,4166769.0,597897.0,Semiurban,Approved
+TEST1075,34,Female,No,2,Graduate,20.0,1411073.0,214532.0,No,No,1172262.0,30,,528.0,0.0,0.55,4320295.0,1844085.0,Urban,Approved
+TEST1076,43,Female,No,3+,Not Graduate,29.0,1281445.0,88092.0,No,No,117661.0,2,Education,350.0,1.0,0.76,402732.0,772800.0,Semiurban,Rejected
+TEST1077,60,Female,No,0,Graduate,22.0,90953.0,316837.0,No,No,618535.0,30,Business,563.0,4.0,0.54,506079.0,1302549.0,Urban,Approved
+TEST1078,41,Male,Yes,0,Graduate,30.0,525328.0,289106.0,No,Yes,316765.0,25,Business,717.0,3.0,0.24,1950013.0,1331673.0,Rural,Rejected
+TEST1079,36,Female,Yes,3+,Not Graduate,8.0,28267.0,28295.0,No,No,710482.0,15,Business,395.0,5.0,0.07,2623836.0,1425402.0,Semiurban,Approved
+TEST1080,65,Male,No,0,Not Graduate,11.0,107745.0,13807.0,No,Yes,854462.0,20,Business,387.0,1.0,0.75,1132658.0,1562833.0,Semiurban,Approved
+TEST1081,38,Male,No,3+,Not Graduate,20.0,849945.0,157504.0,No,No,919270.0,5,Vehicle,377.0,5.0,0.07,1985209.0,1902897.0,Urban,Rejected
+TEST1082,44,Female,Yes,0,Graduate,0.0,182164.0,238067.0,Yes,No,498874.0,2,Vehicle,587.0,,0.75,4322626.0,1727757.0,Urban,Approved
+TEST1083,46,Female,Yes,1,Not Graduate,25.0,560626.0,168152.0,Yes,No,903499.0,10,Home,419.0,3.0,0.47,656951.0,1479359.0,Semiurban,Rejected
+TEST1084,45,Female,No,0,Graduate,25.0,156484.0,394540.0,No,No,1073980.0,3,Personal,790.0,5.0,0.8,11303.0,1163950.0,Rural,Rejected
+TEST1085,65,Female,Yes,3+,Graduate,0.0,556831.0,353411.0,No,No,168033.0,10,Business,751.0,2.0,0.69,1210209.0,549148.0,Urban,Approved
+TEST1086,61,Female,No,3+,Graduate,14.0,917323.0,166981.0,Yes,Yes,680265.0,25,Home,799.0,0.0,0.85,3479591.0,676555.0,Urban,Approved
+TEST1087,49,Female,No,3+,Not Graduate,1.0,,220411.0,No,Yes,663157.0,30,Personal,464.0,2.0,0.33,2366610.0,601763.0,Urban,Approved
+TEST1088,35,Female,Yes,3+,Not Graduate,29.0,1293732.0,19870.0,Yes,No,871106.0,3,Education,481.0,4.0,0.66,4180303.0,484090.0,Semiurban,Rejected
+TEST1089,65,Female,Yes,3+,Graduate,21.0,1297568.0,203196.0,Yes,No,910120.0,5,Vehicle,768.0,3.0,0.37,1068199.0,873698.0,Semiurban,Approved
+TEST1090,21,Male,No,2,Graduate,15.0,541771.0,248683.0,Yes,Yes,481734.0,5,Personal,306.0,2.0,0.43,4917339.0,676787.0,Semiurban,Approved
+TEST1091,45,Female,No,2,Not Graduate,24.0,855857.0,234677.0,Yes,No,715627.0,2,Education,629.0,1.0,0.55,4176224.0,1935740.0,Semiurban,Approved
+TEST1092,27,Female,Yes,0,Graduate,7.0,588044.0,26790.0,Yes,No,271897.0,25,Personal,,4.0,0.75,4684346.0,1337803.0,Rural,Rejected
+TEST1093,29,Male,No,3+,Not Graduate,12.0,568176.0,118874.0,No,Yes,51062.0,15,Vehicle,384.0,4.0,0.84,458298.0,742406.0,Rural,Approved
+TEST1094,44,Female,Yes,0,Graduate,20.0,716095.0,287433.0,Yes,No,145462.0,25,Vehicle,446.0,2.0,0.66,1047343.0,843804.0,Semiurban,Rejected
+TEST1095,21,Male,No,3+,Not Graduate,0.0,858727.0,224786.0,No,No,820173.0,30,Home,680.0,2.0,0.38,105228.0,648074.0,Rural,Rejected
+TEST1096,64,Male,Yes,3+,Graduate,15.0,1059978.0,15485.0,No,Yes,622203.0,10,Business,847.0,3.0,0.39,4620650.0,961568.0,Urban,Approved
+TEST1097,28,Female,Yes,2,Not Graduate,28.0,1187928.0,306626.0,Yes,Yes,708956.0,5,Personal,584.0,0.0,0.64,1755692.0,1580677.0,Urban,Approved
+TEST1098,44,Male,Yes,2,Graduate,6.0,894474.0,86188.0,Yes,Yes,581849.0,10,Personal,381.0,2.0,0.24,884056.0,1080174.0,Urban,Rejected
+TEST1099,31,Male,No,1,Not Graduate,30.0,110999.0,4748.0,No,No,517010.0,10,Education,813.0,2.0,0.14,1730228.0,1554510.0,Semiurban,Approved
+TEST1100,37,Male,No,2,Not Graduate,4.0,1091531.0,217841.0,Yes,Yes,436193.0,10,Vehicle,822.0,5.0,0.33,1946793.0,1830815.0,Urban,Rejected
+TEST1011,31,Female,Yes,2,Graduate,11.0,472556.0,112856.0,Yes,No,367537.0,7,Vehicle,685.0,1.0,0.53,4785956.0,592632.0,Rural,Approved
+TEST1011,50,Female,Yes,2,Not Graduate,18.0,1430478.0,39954.0,No,Yes,757689.0,15,Education,800.0,5.0,0.71,1352564.0,42534.0,Rural,Rejected
+TEST1031,62,Male,No,0,Not Graduate,16.0,745777.0,139407.0,Yes,No,479802.0,25,Personal,447.0,4.0,0.41,2215685.0,1124289.0,Rural,Approved
+TEST1031,59,Female,No,0,Graduate,7.0,213751.0,197775.0,Yes,Yes,1078455.0,2,Education,331.0,4.0,0.44,4088657.0,930491.0,Semiurban,Rejected
+TEST1051,27,Male,No,0,Not Graduate,19.0,977699.0,365177.0,Yes,No,1097172.0,15,Business,670.0,0.0,0.08,1721610.0,1077833.0,Rural,Approved

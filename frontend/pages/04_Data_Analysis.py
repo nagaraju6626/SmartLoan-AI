@@ -1,4 +1,5 @@
 import streamlit as st
+from frontend.components.theme import apply_dataframe_style
 import httpx
 import os
 import pandas as pd
@@ -14,6 +15,12 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from frontend.components.navigation import render_sidebar
 from frontend.components.header import render_header
 from backend.ml.preprocessing import detect_columns
+
+
+# --- Authentication Check ---
+if not st.session_state.get("authenticated", False):
+    st.switch_page("pages/00_Login.py")
+# ----------------------------
 
 render_sidebar()
 render_header()
@@ -91,7 +98,7 @@ def main():
     # 📄 RAW DATASET
     # --------------------------------------------
     st.markdown("### 📄 RAW DATASET")
-    st.dataframe(raw_df.head(10), use_container_width=True)
+    st.dataframe(apply_dataframe_style(raw_df.head(10)), use_container_width=True)
     
     # --------------------------------------------
     # 🧹 DATA CLEANING
@@ -162,7 +169,7 @@ def main():
         
         
         st.markdown("### ✨ CLEANED DATASET")
-        st.dataframe(cleaned_df.head(10), use_container_width=True)
+        st.dataframe(apply_dataframe_style(cleaned_df.head(10)), use_container_width=True)
         
         # Active DataFrame for the rest of the page
         df = cleaned_df
@@ -191,7 +198,7 @@ def main():
         else:
             mapping_data.append({"Standard Feature": std_feat.replace("_", " ").title(), "Detected Column": "-", "Status": "❌ Missing"})
             
-    st.dataframe(pd.DataFrame(mapping_data), use_container_width=True, hide_index=True)
+    st.dataframe(apply_dataframe_style(pd.DataFrame(mapping_data)), use_container_width=True, hide_index=True)
 
     st.markdown("---")
 
@@ -230,7 +237,7 @@ def main():
         })
             
     st.markdown("<small><i>Repeated Values indicates repeated values within an individual column and does not mean duplicate rows.</i></small>", unsafe_allow_html=True)
-    st.dataframe(pd.DataFrame(dq_data), use_container_width=True, hide_index=True)
+    st.dataframe(apply_dataframe_style(pd.DataFrame(dq_data)), use_container_width=True, hide_index=True)
 
     st.markdown("---")
 
@@ -308,7 +315,7 @@ def main():
                 })
             
     if outlier_data:
-        st.dataframe(pd.DataFrame(outlier_data), use_container_width=True, hide_index=True)
+        st.dataframe(apply_dataframe_style(pd.DataFrame(outlier_data)), use_container_width=True, hide_index=True)
     else:
         st.info("No potential outliers detected using the IQR method.")
 

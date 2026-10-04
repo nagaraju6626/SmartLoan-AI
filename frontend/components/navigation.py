@@ -4,16 +4,9 @@ def toggle_sidebar():
     st.session_state["sidebar_collapsed"] = not st.session_state.get("sidebar_collapsed", False)
 
 def render_sidebar():
-    # ----------------------------------------
-    # GLOBAL THEME STATE
-    # ----------------------------------------
-    if "theme" not in st.session_state:
-        st.session_state["theme"] = "light"
-        
     if "sidebar_collapsed" not in st.session_state:
         st.session_state["sidebar_collapsed"] = False
     
-    theme = st.session_state["theme"]
     collapsed = st.session_state["sidebar_collapsed"]
 
     # ----------------------------------------
@@ -22,20 +15,12 @@ def render_sidebar():
     css = ""
 
     # Provide safe fallback for CSS just in case
-    if theme == "dark":
-        css = f"""<style>
-        /* DARK MODE SIDEBAR SPECIFIC OVERRIDES IF NEEDED */
-        [data-testid="stSidebar"] {{
-            background-color: #0B1324 !important;
-        }}
-        """
-    else:
-        css = f"""<style>
-        /* LIGHT MODE SIDEBAR SPECIFIC OVERRIDES IF NEEDED */
-        [data-testid="stSidebar"] {{
-            background-color: #0B1930 !important;
-        }}
-        """
+    css = f"""<style>
+    /* LIGHT MODE SIDEBAR SPECIFIC OVERRIDES IF NEEDED */
+    [data-testid="stSidebar"] {{
+        background-color: #0B1930 !important;
+    }}
+    """
 
     # Add the structural CSS that doesn't change based on theme
     css += f"""
@@ -59,7 +44,7 @@ def render_sidebar():
         max-width: {'0px' if collapsed else '290px'} !important;
         transition: width 0.3s ease;
         overflow-x: hidden;
-        padding-bottom: 80px !important;
+        padding-bottom: 0px !important;
         {'padding: 0 !important;' if collapsed else ''}
         {'border-right: none !important;' if collapsed else ''}
     }}
@@ -88,7 +73,7 @@ def render_sidebar():
         flex-direction: column;
         gap: 4px;
         margin-top: -10px;
-        padding-bottom: 80px;
+        padding-bottom: 0px;
     }}
 
     /* Custom styling for st.page_link */
@@ -128,23 +113,6 @@ def render_sidebar():
     }}
     .custom-logo-text {{
         {'display: none;' if collapsed else 'display: block; line-height: 1.3;'}
-    }}
-
-    /* Bottom User Section */
-    .sidebar-bottom {{
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: {'0px' if collapsed else '290px'};
-        padding: {'0px' if collapsed else '16px 20px'};
-        background-color: inherit;
-        border-top: 1px solid rgba(255,255,255,0.05);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #94A3B8;
-        z-index: 100;
-        transition: width 0.3s ease;
     }}
     .user-info {{
         display: flex;
@@ -197,13 +165,3 @@ def render_sidebar():
         
         st.markdown('</div>', unsafe_allow_html=True)
 
-        # Admin Bottom
-        st.markdown("""
-        <div class="sidebar-bottom">
-            <div class="user-info">
-                <span>👤</span>
-                <span>Admin User</span>
-            </div>
-            <span class="settings-icon">⚙️</span>
-        </div>
-        """, unsafe_allow_html=True)
