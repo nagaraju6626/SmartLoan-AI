@@ -73,7 +73,8 @@ hero_img_b64 = get_base64_image()
 custom_css = """<style>
 /* Base Page Setup */
 .stApp { background-color: #F8FAFC; font-family: 'Inter', sans-serif; }
-.stAppViewBlockContainer { padding-top: 0rem !important; }
+.block-container { padding-top: 1.5rem !important; }
+[data-testid="stAppViewBlockContainer"] { padding-top: 1.5rem !important; }
 /* HERO SECTION */
 .hero-section { background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border-radius: 20px; padding: 48px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #BFDBFE; }
 .hero-left { flex: 1; max-width: 50%; }

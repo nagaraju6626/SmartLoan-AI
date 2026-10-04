@@ -79,7 +79,7 @@ html, body, [class*="css"] {{
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
-    align-items: center;
+    align-items: stretch;
     gap: 24px !important;
     padding: 20px;
 }}
@@ -196,6 +196,9 @@ html, body, [class*="css"] {{
     border: 1px solid rgba(255,255,255,0.8);
     position: relative;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }}
 
 .card-header {{ text-align: center; margin-bottom: 24px; }}
