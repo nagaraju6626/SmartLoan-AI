@@ -67,6 +67,14 @@ if uploaded_file is not None:
                     st.session_state['current_dataset_id'] = dataset_id
                     st.session_state['current_dataset_name'] = data_info['filename']
                     
+                    # Store original raw dataset in session state
+                    uploaded_file.seek(0)
+                    import pandas as pd
+                    st.session_state['raw_df'] = pd.read_csv(uploaded_file)
+                    st.session_state['uploaded_filename'] = uploaded_file.name
+                    uploaded_file.seek(0)
+
+                    
                     st.success(f"Successfully uploaded {data_info['filename']}!")
                     
                     # Also fetch the full analysis (can take time for large datasets)

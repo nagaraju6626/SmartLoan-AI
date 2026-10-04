@@ -55,9 +55,9 @@ def main():
     st.markdown("---")
     
     raw_df, cleaned_df = load_data(dataset_id)
-    if raw_df is None:
-        st.error("Failed to load original dataset. Please return to Data Upload and upload the file again.")
-        return
+    if raw_df is None or raw_df.empty:
+        st.error("No dataset found. Please upload a CSV from the Data Upload page.")
+        st.stop()
 
     # --------------------------------------------
     # 📊 DATASET OVERVIEW
