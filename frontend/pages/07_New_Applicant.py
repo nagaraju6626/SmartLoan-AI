@@ -24,7 +24,10 @@ if not st.session_state.get("authenticated", False):
 render_sidebar()
 render_header()
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+try:
+    API_BASE_URL = st.secrets.get("API_BASE_URL", os.getenv("API_BASE_URL", "http://127.0.0.1:8000"))
+except Exception:
+    API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
 def apply_custom_css():
     st.markdown("""

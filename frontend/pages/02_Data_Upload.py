@@ -13,7 +13,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(PROJECT_ROOT))
 load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+try:
+    API_BASE_URL = st.secrets.get("API_BASE_URL", os.getenv("API_BASE_URL", "http://127.0.0.1:8000"))
+except Exception:
+    API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(page_title="Data Upload", page_icon="??", layout="wide")
 
@@ -43,7 +46,7 @@ if uploaded_file is not None:
                     st.error(f"Backend server returned an error: {health_res.status_code}. Please check backend logs.")
                     st.stop()
             except httpx.ConnectError:
-                st.error(f"Backend server is not running at {API_BASE_URL}. Please start the backend and try again.")
+                st.error("Unable to connect to the backend server. Please try again later. (In local dev, ensure FastAPI is running on port 8000)")
                 st.stop()
             except httpx.TimeoutException:
                 st.error("Backend server timed out during health check. Please ensure it's responding.")
