@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from frontend.components.navigation import render_sidebar
 from frontend.components.header import render_header
+from frontend.utils.backend import wait_for_backend
 
 # --- Authentication Check ---
 if not st.session_state.get("authenticated", False):
