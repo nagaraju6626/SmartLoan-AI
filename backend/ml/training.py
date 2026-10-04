@@ -127,7 +127,35 @@ def train_model(dataset_path: str, target_col: str, model_type: str):
     version = f"v{datetime.now().strftime('%Y%m%d%H%M%S')}"
     model_path = os.path.join(MODELS_DIR, f"model_{version}.pkl")
     
-    joblib.dump(pipeline, model_path)
+    joblib.dump(pipeline, model_path)    # Extract feature importance
+    feature_importance_list = []
+    try:
+        classifier_step = pipeline.named_steps['classifier']
+        preprocessor_step = pipeline.named_steps['preprocessor']
+        
+        if hasattr(preprocessor_step, 'get_feature_names_out'):
+            feature_names = list(preprocessor_step.get_feature_names_out())
+            feature_names = [f.split("__", 1)[-1] if "__" in f else f for f in feature_names]
+        else:
+            feature_names = numeric_features + categorical_features
+            
+        importances = None
+        if hasattr(classifier_step, 'feature_importances_'):
+            importances = classifier_step.feature_importances_
+        elif hasattr(classifier_step, 'coef_'):
+            importances = np.abs(classifier_step.coef_[0])
+            
+        if importances is not None and len(importances) == len(feature_names):
+            total = np.sum(importances)
+            if total > 0:
+                importances = importances / total
+                
+            fi_data = [{"feature": f, "importance": float(i)} for f, i in zip(feature_names, importances)]
+            feature_importance_list = sorted(fi_data, key=lambda x: x["importance"], reverse=True)[:10]
+    except Exception:
+        pass
+        
+
     
     metadata = {
         "version": version,
@@ -138,6 +166,7 @@ def train_model(dataset_path: str, target_col: str, model_type: str):
         "target": target_col,
         "target_mapping": target_mapping,
         "metrics": metrics,
+        "feature_importance": feature_importance_list,
         "status": "Active" # Can be updated later
     }
     

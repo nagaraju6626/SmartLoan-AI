@@ -30,6 +30,7 @@ class ReportRequest(BaseModel):
     active_model_version: Optional[str] = None
     prediction_result: Optional[Dict[str, Any]] = None
     prediction_inputs: Optional[Dict[str, Any]] = None
+    csv_data: Optional[str] = None
 
 def safe_draw_table(c, data, col_widths, style, x, y_start, empty_msg="No data available"):
     if not data or len(data) <= 1 and (len(data) == 0 or not any(data[0])):
@@ -97,15 +98,17 @@ def draw_section_title(c, y, title):
 @router.post("/generate")
 async def generate_report(req: ReportRequest):
     try:
-        file_path = os.path.join(PROCESSED_DATA_DIR, f"{req.dataset_id}_cleaned.csv")
-        if not os.path.exists(file_path):
-            # Fallback for older versions if they didn't use _cleaned
-            file_path = os.path.join(PROCESSED_DATA_DIR, f"{req.dataset_id}.csv")
-            
-        if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="Processed dataset not found.")
-            
-        df = pd.read_csv(file_path)
+        import io
+        if req.csv_data:
+            df = pd.read_csv(io.StringIO(req.csv_data))
+        else:
+            file_path = os.path.join(PROCESSED_DATA_DIR, f"{req.dataset_id}_cleaned.csv")
+            if not os.path.exists(file_path):
+                # Fallback for older versions if they didn't use _cleaned
+                file_path = os.path.join(PROCESSED_DATA_DIR, f"{req.dataset_id}.csv")
+            if not os.path.exists(file_path):
+                raise HTTPException(status_code=404, detail="Processed dataset not found.")
+            df = pd.read_csv(file_path)
         report_file_name = f"business_report_{req.dataset_id}.{req.format}"
         report_path = os.path.join(REPORTS_DIR, report_file_name)
         
@@ -607,7 +610,8 @@ async def generate_report(req: ReportRequest):
         draw_kpi_card(c, 380, y-120, 160, 50, "Approval Probability", res_prob)
             
         c.save()
-        return {"message": "Report generated", "download_url": f"/api/reports/download/{report_file_name}"}
+        from fastapi.responses import FileResponse
+        return FileResponse(path=report_path, media_type="application/pdf", filename=report_file_name)
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
